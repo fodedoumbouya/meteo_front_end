@@ -31,7 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_osm_plugin: ^0.42.0
+  flutter_osm_plugin: ^0.42.0 # Maps
+  json_annotation: ^4.7.0
+  freezed_annotation: ^2.2.0
+  #------------------UI-----------------------------
+  # weather_animation: ^0.0.2 # animation
+  fl_chart: ^0.60.0 # chart
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +45,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  freezed: ^2.2.1
+  json_serializable: ^6.5.4
+  build_runner: ^2.3.2
+  lint: ^2.0.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
