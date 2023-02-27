@@ -4,6 +4,8 @@ import 'package:meteo_front_end/base/base_widget.dart';
 import 'package:meteo_front_end/pages/mapView.dart';
 import 'package:meteo_front_end/widgets/displayAntenna.dart';
 
+import '../widgets/weatherView/src/model/scenes.dart';
+
 class Home extends BaseWidget {
   const Home({super.key});
 
@@ -139,14 +141,14 @@ class _HomeState extends BaseWidgetState<Home> {
           },
         ),
         // TODO Don't delete it this is weather view
-        // IgnorePointer(
-        //   ignoring: true,
-        //   child: c(
-        //     h: sh(),
-        //     w: sw(),
-        //     child: WeatherScene.weatherEvery.getWeather(),
-        //   ),
-        // )
+        IgnorePointer(
+          ignoring: true,
+          child: c(
+            h: sh(),
+            w: sw(),
+            child: WeatherScene.sunset.getWeather(),
+          ),
+        ),
 
         ...myWidgets.map((e) => onMapReady ? e : sb).toList(),
 
