@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_front_end/base/base_widget.dart';
-import 'package:meteo_front_end/widgets/charts/line_chart.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class DisplayInfo extends BaseWidget {
   const DisplayInfo({super.key});
@@ -12,6 +12,39 @@ class DisplayInfo extends BaseWidget {
 }
 
 class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
+  late WebViewController controller;
+
+  initWebController() {
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.transparent)
+      ..enableZoom(true)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            // if (request.url.startsWith('https://www.youtube.com/')) {
+            //   return NavigationDecision.prevent;
+            // }
+            // return NavigationDecision.navigate;
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('https://flutter.dev'));
+  }
+
+  @override
+  void initState() {
+    initWebController();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,11 +74,12 @@ class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
               child: c(
                 h: sh(),
                 w: sw(),
-                child: Column(
-                  children: const [
-                    LineChartWeather(),
-                  ],
-                ),
+                child: WebViewWidget(controller: controller),
+                // Column(
+                //   children: const [
+                //     LineChartWeather(),
+                //   ],
+                // ),
               ),
             ),
           ],

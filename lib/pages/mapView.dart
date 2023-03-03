@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:meteo_front_end/base/base_widget.dart';
+import 'package:meteo_front_end/utils/constant.dart';
 import 'package:meteo_front_end/widgets/displayInfo.dart';
 
 class MapsView extends BaseWidget {
@@ -28,7 +29,8 @@ class _MapsViewState extends BaseWidgetState<MapsView> {
     return OSMFlutter(
       controller: controller,
       onGeoPointClicked: (p0) {
-        pt(message: p0.toString(), wtf: true);
+        controller.zoomToBoundingBox(BoundingBox.fromGeoPoints([p0]));
+        controller.setZoom(zoomLevel: zoomLevel);
         toFullScreenDialog(const DisplayInfo());
       },
       onLocationChanged: (p0) {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_front_end/utils/myLog.dart';
+import 'package:meteo_front_end/utils/network/network_util.dart';
 
 typedef FunctionBoolCallback = void Function(bool o);
+var ctxt;
 
 abstract class BaseWidget extends StatefulWidget {
   const BaseWidget({Key? key}) : super(key: key);
@@ -18,7 +20,10 @@ abstract class BaseWidgetState<T extends BaseWidget> extends State<T>
     with WidgetsBindingObserver {
   @override
   void initState() {
+    ctxt = context;
+
     pt(message: "main initState");
+    super.initState();
   }
 
   @override
@@ -265,4 +270,16 @@ abstract class BaseWidgetState<T extends BaseWidget> extends State<T>
         width: w,
         child: child,
       );
+
+  void postMap(
+    String url,
+    Map<String, dynamic> body,
+    var callback,
+  ) async {
+    var res = await globalRequest(
+      path: url,
+      body: body,
+    );
+    callback(res);
+  }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:meteo_front_end/base/base_widget.dart';
+import 'package:meteo_front_end/models/models.dart';
 import 'package:meteo_front_end/pages/mapView.dart';
-import 'package:meteo_front_end/widgets/displayAntenna.dart';
-
-import '../widgets/weatherView/src/model/scenes.dart';
 
 class Home extends BaseWidget {
   const Home({super.key});
@@ -18,8 +16,10 @@ class Home extends BaseWidget {
 class _HomeState extends BaseWidgetState<Home> {
   late MapController controller;
   bool onMapReady = false;
-  @override
-  void initState() {
+  bool isStationAdded = false;
+  List<StationData> list = [];
+
+  iniMapConfig() {
     controller = MapController(
       initMapWithUserPosition: false,
       initPosition: GeoPoint(
@@ -29,6 +29,29 @@ class _HomeState extends BaseWidgetState<Home> {
       areaLimit: BoundingBox(
           north: 43.2612, east: 11.0880, south: 41.1063, west: 7.0120),
     );
+  }
+
+  getData() {
+    postMap("station", {}, (callback) {
+      if (callback['code'] == 200) {
+        for (var s in callback['data']) {
+          list.add(StationData.fromJson(s));
+        }
+
+        rebuildState();
+
+        if (!isStationAdded && onMapReady) {
+          isStationAdded = true;
+          addStations();
+        }
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    iniMapConfig();
+    getData();
 
     super.initState();
   }
@@ -39,13 +62,18 @@ class _HomeState extends BaseWidgetState<Home> {
     super.dispose();
   }
 
-  addMarks() {
-    controller.addMarker(
-      GeoPoint(latitude: 42.2736386, longitude: 8.9989234),
-      markerIcon: const MarkerIcon(
-        icon: Icon(Icons.location_on),
-      ),
-    );
+  addStations() {
+    for (var station in list) {
+      controller.addMarker(
+        GeoPoint(latitude: station.lat ?? 0, longitude: station.log ?? 0),
+        markerIcon: const MarkerIcon(
+          icon: Icon(Icons.location_on),
+        ),
+      );
+    }
+    if (list.isNotEmpty) {
+      isStationAdded = true;
+    }
 
     rebuildState();
   }
@@ -115,7 +143,8 @@ class _HomeState extends BaseWidgetState<Home> {
           top: yy(100),
           child: Listener(
             onPointerDown: (event) {
-              toFullScreenDialog(const DisplayAntenna());
+              // toFullScreenDialog(const DisplayAntenna());
+              getData();
             },
             child: c(
               h: yy(150),
@@ -136,19 +165,19 @@ class _HomeState extends BaseWidgetState<Home> {
           onMapReady: (o) {
             if (o) {
               onMapReady = o;
-              addMarks();
+              addStations();
             }
           },
         ),
         // TODO Don't delete it this is weather view
-        IgnorePointer(
-          ignoring: true,
-          child: c(
-            h: sh(),
-            w: sw(),
-            child: WeatherScene.sunset.getWeather(),
-          ),
-        ),
+        // IgnorePointer(
+        //   ignoring: true,
+        //   child: c(
+        //     h: sh(),
+        //     w: sw(),
+        //     child: WeatherScene.sunset.getWeather(),
+        //   ),
+        // ),
 
         ...myWidgets.map((e) => onMapReady ? e : sb).toList(),
 

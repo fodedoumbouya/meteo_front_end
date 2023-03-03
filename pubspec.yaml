@@ -36,8 +36,10 @@ dependencies:
   freezed_annotation: ^2.2.0
   #------------------UI-----------------------------
   # weather_animation: ^0.0.2 # animation
-  fl_chart: ^0.60.0 # chart
-
+  # fl_chart: ^0.60.0 # chart
+  # flutter_widget_from_html_core: ^0.10.0 #html
+  webview_flutter: ^4.0.5
+  dio: ^4.0.6
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
