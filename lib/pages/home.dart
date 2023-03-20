@@ -3,6 +3,8 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:meteo_front_end/base/base_widget.dart';
 import 'package:meteo_front_end/models/models.dart';
 import 'package:meteo_front_end/pages/mapView.dart';
+import 'package:meteo_front_end/widgets/displayAntenna.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class Home extends BaseWidget {
   const Home({super.key});
@@ -144,7 +146,13 @@ class _HomeState extends BaseWidgetState<Home> {
           child: Listener(
             onPointerDown: (event) {
               // toFullScreenDialog(const DisplayAntenna());
-              getData();
+              // getData();
+              showCupertinoModalBottomSheet(
+                expand: false,
+                context: context,
+                backgroundColor: Colors.transparent,
+                builder: (context) => const DisplayAntenna(),
+              );
             },
             child: c(
               h: yy(150),
@@ -158,31 +166,34 @@ class _HomeState extends BaseWidgetState<Home> {
             ),
           )),
     ];
-    return Scaffold(
-      body: Stack(children: [
-        MapsView(
-          controller: controller,
-          onMapReady: (o) {
-            if (o) {
-              onMapReady = o;
-              addStations();
-            }
-          },
-        ),
-        // TODO Don't delete it this is weather view
-        // IgnorePointer(
-        //   ignoring: true,
-        //   child: c(
-        //     h: sh(),
-        //     w: sw(),
-        //     child: WeatherScene.sunset.getWeather(),
-        //   ),
-        // ),
+    return Material(
+      child: Scaffold(
+        body: Stack(children: [
+          MapsView(
+            controller: controller,
+            list: list,
+            onMapReady: (o) {
+              if (o) {
+                onMapReady = o;
+                addStations();
+              }
+            },
+          ),
+          // TODO Don't delete it this is weather view
+          // IgnorePointer(
+          //   ignoring: true,
+          //   child: c(
+          //     h: sh(),
+          //     w: sw(),
+          //     child: WeatherScene.sunset.getWeather(),
+          //   ),
+          // ),
 
-        ...myWidgets.map((e) => onMapReady ? e : sb).toList(),
+          ...myWidgets.map((e) => onMapReady ? e : sb).toList(),
 
-        // const DisplayInfo(),
-      ]),
+          // const DisplayInfo(),
+        ]),
+      ),
     );
   }
 }

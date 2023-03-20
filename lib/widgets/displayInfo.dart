@@ -3,7 +3,8 @@ import 'package:meteo_front_end/base/base_widget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DisplayInfo extends BaseWidget {
-  const DisplayInfo({super.key});
+  String id;
+  DisplayInfo({required this.id, super.key});
 
   @override
   BaseWidgetState<BaseWidget> getState() {
@@ -13,6 +14,46 @@ class DisplayInfo extends BaseWidget {
 
 class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
   late WebViewController controller;
+
+  String html = """ 
+<html>
+    <head>
+        <style>
+            html, body{
+                height: 100%;
+                 font-size: 50px;
+            }
+            .parent > * {
+                margin: 0 auto;
+                 font-size: 50px;
+
+            }
+            .parent {
+                width: 100%; 
+                height: 100%;
+                font-size: 60px;
+            }
+            .child {
+                width: 800px; 
+                height:1000px; 
+                 font-size: 60px;
+                color: blue;
+
+                
+            }
+        </style>
+    </head>
+    <body>
+        <div class="parent">
+            <div class="child">
+                <div  class="allmeteo-widget" data-ws="2108SW031"></div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="https://weather.allmeteo.com/widget/allmeteo.widget.js">  </script>
+</html>
+
+  """;
 
   initWebController() {
     controller = WebViewController()
@@ -36,7 +77,8 @@ class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://flutter.dev'));
+      // ..loadHtmlString(html);
+      ..loadRequest(Uri.parse('http://localhost:8085/widget?id=${widget.id}'));
   }
 
   @override
@@ -47,44 +89,17 @@ class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.5),
-      body: c(
-        h: sh(),
-        w: sw(),
-        child: Stack(
-          children: [
-            Positioned(
-                top: yy(100),
-                right: xx(50),
-                child: Listener(
-                  onPointerDown: (event) => pop(),
-                  child: c(
-                      color: Colors.red,
-                      boxShape: BoxShape.circle,
-                      w: xx(80),
-                      h: yy(80),
-                      child: Icon(
-                        Icons.close,
-                        size: xx(80),
-                      )),
-                )),
-            Positioned(
-              top: yy(200),
-              child: c(
-                h: sh(),
-                w: sw(),
-                child: WebViewWidget(controller: controller),
-                // Column(
-                //   children: const [
-                //     LineChartWeather(),
-                //   ],
-                // ),
-              ),
+    return Material(
+      color: Colors.black.withOpacity(0.5),
+      child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: c(
+              h: yy(sh() + 600),
+              w: sw(),
+              child: WebViewWidget(controller: controller),
             ),
-          ],
-        ),
-      ),
+          )),
     );
   }
 }
