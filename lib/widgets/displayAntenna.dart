@@ -1,26 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:meteo_front_end/models/models.dart';
+import 'package:meteo_front_end/utils/constant.dart';
+import 'package:meteo_front_end/widgets/displayInfo.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DisplayAntenna extends StatelessWidget {
-  const DisplayAntenna({super.key});
+  List<StationData> list;
+  MapController controller;
+  DisplayAntenna({required this.list, required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
           child: ListView.builder(
-        itemCount: 3,
+        itemCount: list.length,
         padding: const EdgeInsets.only(bottom: 10),
         itemBuilder: (context, index) {
-          return Container(
-              height: 100,
-              color: Colors.white,
-              child: ListTile(
-                leading: const Icon(Icons.settings_input_antenna_rounded),
-                title: Text("Antenne $index"),
-                subtitle: const Text("description"),
-                // trailing: Text('status',
-                //     color: index % 2 != 0 ? Colors.red : Colors.blue),
-              ));
+          StationData station = list[index];
+          return Listener(
+            onPointerDown: (event) async {
+              Navigator.of(context).pop();
+              GeoPoint p0 = GeoPoint(
+                  latitude: station.lat ?? 0, longitude: station.log ?? 0);
+              await controller
+                  .zoomToBoundingBox(BoundingBox.fromGeoPoints([p0]));
+
+              await controller.setZoom(zoomLevel: zoomLevel).then((value) {
+                showCupertinoModalBottomSheet(
+                  expand: false,
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) =>
+                      DisplayInfo(id: station.serialNumber ?? ""),
+                );
+              });
+            },
+            child: Column(
+              children: [
+                Container(
+                  height: 50,
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.settings_input_antenna_rounded,
+                      size: 35,
+                      color: Colors.blue,
+                    ),
+                    title: Text(
+                      station.location ?? "",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(station.serialNumber ?? ""),
+                    trailing: Text(
+                      station.deviceNumber ?? "",
+                      style: const TextStyle(
+                          color: Colors.grey, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ),
+                const Divider(),
+              ],
+            ),
+          );
         },
       )),
     );

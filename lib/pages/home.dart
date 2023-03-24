@@ -4,6 +4,7 @@ import 'package:meteo_front_end/base/base_widget.dart';
 import 'package:meteo_front_end/models/models.dart';
 import 'package:meteo_front_end/pages/mapView.dart';
 import 'package:meteo_front_end/widgets/displayAntenna.dart';
+import 'package:meteo_front_end/widgets/weatherView/src/model/scenes.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class Home extends BaseWidget {
@@ -151,7 +152,10 @@ class _HomeState extends BaseWidgetState<Home> {
                 expand: false,
                 context: context,
                 backgroundColor: Colors.transparent,
-                builder: (context) => const DisplayAntenna(),
+                builder: (context) => DisplayAntenna(
+                  list: list,
+                  controller: controller,
+                ),
               );
             },
             child: c(
@@ -180,14 +184,14 @@ class _HomeState extends BaseWidgetState<Home> {
             },
           ),
           // TODO Don't delete it this is weather view
-          // IgnorePointer(
-          //   ignoring: true,
-          //   child: c(
-          //     h: sh(),
-          //     w: sw(),
-          //     child: WeatherScene.sunset.getWeather(),
-          //   ),
-          // ),
+          IgnorePointer(
+            ignoring: true,
+            child: c(
+              h: sh(),
+              w: sw(),
+              child: WeatherScene.weatherEvery.getWeather(),
+            ),
+          ),
 
           ...myWidgets.map((e) => onMapReady ? e : sb).toList(),
 

@@ -14,46 +14,7 @@ class DisplayInfo extends BaseWidget {
 
 class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
   late WebViewController controller;
-
-  String html = """ 
-<html>
-    <head>
-        <style>
-            html, body{
-                height: 100%;
-                 font-size: 50px;
-            }
-            .parent > * {
-                margin: 0 auto;
-                 font-size: 50px;
-
-            }
-            .parent {
-                width: 100%; 
-                height: 100%;
-                font-size: 60px;
-            }
-            .child {
-                width: 800px; 
-                height:1000px; 
-                 font-size: 60px;
-                color: blue;
-
-                
-            }
-        </style>
-    </head>
-    <body>
-        <div class="parent">
-            <div class="child">
-                <div  class="allmeteo-widget" data-ws="2108SW031"></div>
-            </div>
-        </div>
-    </body>
-    <script type="text/javascript" src="https://weather.allmeteo.com/widget/allmeteo.widget.js">  </script>
-</html>
-
-  """;
+  ValueNotifier<bool> pageLoad = ValueNotifier(false);
 
   initWebController() {
     controller = WebViewController()
@@ -64,6 +25,12 @@ class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading bar.
+            print(progress);
+            if (progress == 100) {
+              pageLoad.value = true;
+            } else {
+              pageLoad.value = false;
+            }
           },
           onPageStarted: (String url) {},
           onPageFinished: (String url) {},
@@ -95,10 +62,19 @@ class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
           backgroundColor: Colors.transparent,
           body: Center(
             child: c(
-              h: yy(sh() + 600),
-              w: sw(),
-              child: WebViewWidget(controller: controller),
-            ),
+                h: yy(sh() + 600),
+                w: sw(),
+                child: ValueListenableBuilder(
+                  valueListenable: pageLoad,
+                  builder: (context, value, child) {
+                    return value
+                        ? WebViewWidget(controller: controller)
+                        : const Center(
+                            child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ));
+                  },
+                )),
           )),
     );
   }
