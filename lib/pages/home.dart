@@ -4,7 +4,7 @@ import 'package:meteo_front_end/base/base_widget.dart';
 import 'package:meteo_front_end/models/models.dart';
 import 'package:meteo_front_end/pages/mapView.dart';
 import 'package:meteo_front_end/widgets/displayAntenna.dart';
-import 'package:meteo_front_end/widgets/weatherView/src/model/scenes.dart';
+import 'package:meteo_front_end/widgets/weatherView/weather_animation.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class Home extends BaseWidget {
@@ -108,6 +108,10 @@ class _HomeState extends BaseWidgetState<Home> {
           child: Listener(
             onPointerDown: (event) {
               controller.zoomOut();
+              if (weatherScene != WeatherScene.none) {
+                weatherScene = WeatherScene.none;
+                rebuildState();
+              }
               // await controller.enableTracking(enableStopFollow: true);
             },
             child: c(
@@ -148,6 +152,7 @@ class _HomeState extends BaseWidgetState<Home> {
             onPointerDown: (event) {
               // toFullScreenDialog(const DisplayAntenna());
               // getData();
+
               showCupertinoModalBottomSheet(
                 expand: false,
                 context: context,
@@ -182,6 +187,9 @@ class _HomeState extends BaseWidgetState<Home> {
                 addStations();
               }
             },
+            onClikeStationId: (o) {
+              getWeather(id: o);
+            },
           ),
           // TODO Don't delete it this is weather view
           IgnorePointer(
@@ -189,7 +197,7 @@ class _HomeState extends BaseWidgetState<Home> {
             child: c(
               h: sh(),
               w: sw(),
-              child: WeatherScene.weatherEvery.getWeather(),
+              child: weatherScene.getWeather(),
             ),
           ),
 

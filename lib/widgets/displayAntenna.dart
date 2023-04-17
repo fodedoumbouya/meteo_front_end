@@ -1,71 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:meteo_front_end/base/base_widget.dart';
 import 'package:meteo_front_end/models/models.dart';
 import 'package:meteo_front_end/utils/constant.dart';
 import 'package:meteo_front_end/widgets/displayInfo.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class DisplayAntenna extends StatelessWidget {
+class DisplayAntenna extends BaseWidget {
   List<StationData> list;
   MapController controller;
   DisplayAntenna({required this.list, required this.controller, super.key});
 
   @override
+  BaseWidgetState<BaseWidget> getState() {
+    return _DisplayAntennaState();
+  }
+}
+
+class _DisplayAntennaState extends BaseWidgetState<DisplayAntenna> {
+  List<StationData> listWithTempData = [];
+
+  init() {
+    for (var d in widget.list) {
+      if (!d.model!.contains("Rain")) {
+        listWithTempData.add(d);
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
       child: SafeArea(
+          top: false,
           child: ListView.builder(
-        itemCount: list.length,
-        padding: const EdgeInsets.only(bottom: 10),
-        itemBuilder: (context, index) {
-          StationData station = list[index];
-          return Listener(
-            onPointerDown: (event) async {
-              Navigator.of(context).pop();
-              GeoPoint p0 = GeoPoint(
-                  latitude: station.lat ?? 0, longitude: station.log ?? 0);
-              await controller
-                  .zoomToBoundingBox(BoundingBox.fromGeoPoints([p0]));
+            itemCount: listWithTempData.length,
+            padding: const EdgeInsets.only(bottom: 10),
+            itemBuilder: (context, index) {
+              StationData station = listWithTempData[index];
+              return Listener(
+                onPointerDown: (event) async {
+                  Navigator.of(context).pop();
+                  GeoPoint p0 = GeoPoint(
+                      latitude: station.lat ?? 0, longitude: station.log ?? 0);
+                  // for (var s in widget.list) {
+                  //   pt(message: s.location ?? "", wtf: true);
+                  //   if (s.location == station.location &&
+                  //       s.model!.contains("${station.model} & Rain")) {
+                  //     getWeather(id: s.serialNumber ?? "");
+                  //   }
+                  // }
+                  await widget.controller
+                      .zoomToBoundingBox(BoundingBox.fromGeoPoints([p0]));
 
-              await controller.setZoom(zoomLevel: zoomLevel).then((value) {
-                showCupertinoModalBottomSheet(
-                  expand: false,
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) =>
-                      DisplayInfo(id: station.serialNumber ?? ""),
-                );
-              });
-            },
-            child: Column(
-              children: [
-                Container(
-                  height: 50,
-                  color: Colors.white,
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.settings_input_antenna_rounded,
-                      size: 35,
-                      color: Colors.blue,
+                  await widget.controller
+                      .setZoom(zoomLevel: zoomLevel)
+                      .then((value) {
+                    showCupertinoModalBottomSheet(
+                      expand: false,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) =>
+                          DisplayInfo(id: station.serialNumber ?? ""),
+                    );
+                  });
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      height: 50,
+                      color: Colors.white,
+                      child: ListTile(
+                        leading: const Icon(
+                          Icons.settings_input_antenna_rounded,
+                          size: 35,
+                          color: Colors.blue,
+                        ),
+                        title: Text(
+                          station.location ?? "",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(station.serialNumber ?? ""),
+                        trailing: Text(
+                          station.deviceNumber ?? "",
+                          style: const TextStyle(
+                              color: Colors.grey, fontStyle: FontStyle.italic),
+                        ),
+                      ),
                     ),
-                    title: Text(
-                      station.location ?? "",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(station.serialNumber ?? ""),
-                    trailing: Text(
-                      station.deviceNumber ?? "",
-                      style: const TextStyle(
-                          color: Colors.grey, fontStyle: FontStyle.italic),
-                    ),
-                  ),
+                    const Divider(),
+                  ],
                 ),
-                const Divider(),
-              ],
-            ),
-          );
-        },
-      )),
+              );
+            },
+          )),
     );
   }
 }

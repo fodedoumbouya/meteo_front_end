@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:meteo_front_end/models/models.dart';
 import 'package:meteo_front_end/utils/myLog.dart';
 import 'package:meteo_front_end/utils/network/network_util.dart';
+import 'package:meteo_front_end/widgets/weatherView/weather_animation.dart';
 
 typedef FunctionBoolCallback = void Function(bool o);
+typedef FunctionStringCallback = void Function(String o);
+
 var ctxt;
 
 abstract class BaseWidget extends StatefulWidget {
@@ -18,10 +24,11 @@ abstract class BaseWidget extends StatefulWidget {
 
 abstract class BaseWidgetState<T extends BaseWidget> extends State<T>
     with WidgetsBindingObserver {
+  WeatherScene weatherScene = WeatherScene.none;
+
   @override
   void initState() {
     ctxt = context;
-
     pt(message: "main initState");
     super.initState();
   }
@@ -38,6 +45,19 @@ abstract class BaseWidgetState<T extends BaseWidget> extends State<T>
     pt(message: "didChangeDependencies\n");
 
     super.didChangeDependencies();
+  }
+
+  getWeather({
+    required String id,
+  }) async {
+    var response =
+        await postMap("weather/measurements?id=$id", {}, (callback) {});
+    Map<String, dynamic> json = jsonDecode(response);
+    RequestResp requestResp = RequestResp.fromJson(json);
+    if (requestResp.code == 200) {
+      weatherScene = getWeatherByName(name: requestResp.data ?? "");
+      rebuildState();
+    }
   }
 
   Future toFullScreenDialog(Widget w) {
@@ -271,7 +291,7 @@ abstract class BaseWidgetState<T extends BaseWidget> extends State<T>
         child: child,
       );
 
-  void postMap(
+  postMap(
     String url,
     Map<String, dynamic> body,
     var callback,
@@ -281,5 +301,6 @@ abstract class BaseWidgetState<T extends BaseWidget> extends State<T>
       body: body,
     );
     callback(res);
+    return res;
   }
 }

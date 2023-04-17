@@ -9,11 +9,13 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 class MapsView extends BaseWidget {
   MapController controller;
   FunctionBoolCallback onMapReady;
+  FunctionStringCallback onClikeStationId;
   List<StationData> list;
   MapsView(
       {required this.controller,
       required this.onMapReady,
       required this.list,
+      required this.onClikeStationId,
       super.key});
 
   @override
@@ -36,14 +38,19 @@ class _MapsViewState extends BaseWidgetState<MapsView> {
     return OSMFlutter(
       controller: controller,
       onGeoPointClicked: (p0) async {
-        String id = widget.list
-                .firstWhere((element) =>
-                    GeoPoint(
-                        latitude: element.lat ?? 0,
-                        longitude: element.log ?? 0) ==
-                    p0)
-                .serialNumber ??
-            "";
+        StationData station = widget.list.firstWhere((element) =>
+            GeoPoint(latitude: element.lat ?? 0, longitude: element.log ?? 0) ==
+            p0);
+
+        for (var s in widget.list) {
+          // pt(message: s.model ?? "", wtf: true);
+          if (s.location == station.location &&
+              s.model!.contains("${station.model} & Rain")) {
+            // pt(message: s.model ?? "", wtf: true);
+            widget.onClikeStationId(s.serialNumber ?? "");
+          }
+        }
+
         await controller.zoomToBoundingBox(BoundingBox.fromGeoPoints([p0]));
 
         await controller.setZoom(zoomLevel: zoomLevel).then((value) {
@@ -51,7 +58,7 @@ class _MapsViewState extends BaseWidgetState<MapsView> {
             expand: false,
             context: context,
             backgroundColor: Colors.transparent,
-            builder: (context) => DisplayInfo(id: id),
+            builder: (context) => DisplayInfo(id: station.serialNumber ?? ""),
           );
         });
         // toFullScreenDialog(const DisplayInfo());

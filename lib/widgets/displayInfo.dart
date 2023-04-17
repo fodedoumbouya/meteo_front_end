@@ -45,7 +45,8 @@ class _DisplayInfoState extends BaseWidgetState<DisplayInfo> {
         ),
       )
       // ..loadHtmlString(html);
-      ..loadRequest(Uri.parse('http://localhost:8085/widget?id=${widget.id}'));
+      ..loadRequest(
+          Uri.parse('http://localhost:8085/api/widget?id=${widget.id}'));
   }
 
   @override

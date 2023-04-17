@@ -60,12 +60,36 @@ enum WeatherScene {
 
   /// Each weather element in this package is represented.
   weatherEvery,
+
+  none,
   ;
 
   Widget getWeather() => getWeatherScene(this);
 }
 
 double opacity = 0.4;
+
+WeatherScene getWeatherByName({required String name}) {
+  WeatherScene weatherScene = WeatherScene.none;
+  if (WeatherScene.scorchingSun.name == name) {
+    weatherScene = WeatherScene.scorchingSun;
+  } else if (WeatherScene.sunset.name == name) {
+    weatherScene = WeatherScene.sunset;
+  } else if (WeatherScene.frosty.name == name) {
+    weatherScene = WeatherScene.frosty;
+  } else if (WeatherScene.snowfall.name == name) {
+    weatherScene = WeatherScene.snowfall;
+  } else if (WeatherScene.showerSleet.name == name) {
+    weatherScene = WeatherScene.showerSleet;
+  } else if (WeatherScene.stormy.name == name) {
+    weatherScene = WeatherScene.stormy;
+  } else if (WeatherScene.rainyOvercast.name == name) {
+    weatherScene = WeatherScene.rainyOvercast;
+  } else if (WeatherScene.weatherEvery.name == name) {
+    weatherScene = WeatherScene.weatherEvery;
+  }
+  return weatherScene;
+}
 
 Widget getWeatherScene(WeatherScene weatherScene) {
   switch (weatherScene) {
@@ -720,5 +744,7 @@ Widget getWeatherScene(WeatherScene weatherScene) {
           ),
         ],
       );
+    case WeatherScene.none:
+      return const SizedBox();
   }
 }

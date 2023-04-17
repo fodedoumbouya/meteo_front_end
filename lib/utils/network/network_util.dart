@@ -60,6 +60,7 @@ Future globalRequest({
   log("host: $host \npath: $path \nparams: [$httpBody]");
   Map<String, dynamic> headers = ({});
   Response response;
+  path = "api/$path";
   try {
     if (isGet) {
       response = await dio!.get(path,
