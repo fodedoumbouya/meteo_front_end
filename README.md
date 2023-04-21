@@ -33,8 +33,6 @@
     ## L'interface du l'application 
 
 ![Alt text](https://cdn.discordapp.com/attachments/1032261521625067592/1098647762154836028/simulator_screenshot_18B01876-A0A6-4199-A2DE-BAF3A53F0B36.png?raw=true "Page d'accueil")
-![Alt text](images/p1_2.png?raw=true "Maps")
-![Alt text](images/p1_3.png?raw=true "Site web")
-![Alt text](images/p1_4.png?raw=true "Images ")
-![Alt text](images/p1_5.png?raw=true "Profile ")
-![Alt text](images/p1_6.png?raw=true "Services")
+![Alt text](https://cdn.discordapp.com/attachments/1032261521625067592/1098647762763001866/simulator_screenshot_28FB7C92-2DD8-49E9-9E33-DC62C8E51122.png?raw=true "Maps")
+![Alt text](https://cdn.discordapp.com/attachments/1032261521625067592/1098647763023057057/simulator_screenshot_8D11E476-7CF8-455E-8DA6-F212FB8D0CD2.png?raw=true "Site web")
+![Alt text](https://cdn.discordapp.com/attachments/1032261521625067592/1098647763354394645/simulator_screenshot_5F53A9EF-6F21-4875-9161-5E42E849C45A.png?raw=true "Images ")
