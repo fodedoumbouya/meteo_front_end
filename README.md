@@ -13,7 +13,7 @@
     ```ruby
     cd meteo_front_end/
     fluter clean
-    #安装依赖
+    #installer les dépendances
     flutter pub get
     ```
 3. Compiler et exécuter : ([IDE facultatif en cours d'exécution](https://docs.flutter.dev/get-started/editor))
